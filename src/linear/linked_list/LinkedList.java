@@ -2,7 +2,7 @@ package linear.linked_list;
 
 import java.util.NoSuchElementException;
 
-public class LinkedList {
+public class LinkedList<T> {
 
     private Node head;
     private Node tail;
@@ -10,10 +10,10 @@ public class LinkedList {
     private int size;
 
     private class Node {
-        private int value;
-        private Node next;
+        private final T value;
+        private LinkedList<T>.Node next;
 
-        public Node(int value) {
+        public Node(T value) {
             this.value = value;
         }
 
@@ -25,7 +25,7 @@ public class LinkedList {
         }
     }
 
-    public void addFirst(int value) {
+    public void addHead(T value) {
         size++;
         var node = new Node(value);
         if (isEmpty())
@@ -36,31 +36,33 @@ public class LinkedList {
         }
     }
 
-    public void addLast(int value) {
+    public void addTail(T value) {
         size++;
         var node = new Node(value);
-        if (tail == null)
-            addFirst(value);
+        if (isEmpty())
+            addHead(value);
         else {
             tail.next = node;
             tail = node;
         }
     }
 
-    public void removeFirst() {
+    public T removeHead() {
         // [a -> b -> c]
+        final T value = headValue();
         if (isEmpty()) throw new NoSuchElementException();
         size--;
         if (head == tail) {
             head = tail = null;
-            return;
+            return value;
         }
-        var afterHead = head.next; // [b -> c]
+        Node afterHead = head.next; // [b -> c]
         head.next = null; // [a -> null]
         head = afterHead; // [b -> c]
+        return value;
     }
 
-    public void removeLast() {
+    public void removeTail() {
         if (isEmpty()) throw new NoSuchElementException();
         size--;
         if (head == tail) {
@@ -72,9 +74,9 @@ public class LinkedList {
             tail.next = null;
     }
 
-    public int indexOf(int target) {
+    public int indexOf(T target) {
         var index = 0;
-        var curr = head;
+        Node curr = head;
         while (curr != null) {
             if (curr.value == target) return index;
             curr = curr.next;
@@ -83,7 +85,7 @@ public class LinkedList {
         return -1;
     }
 
-    public boolean contains(int target) {
+    public boolean contains(T target) {
         return indexOf(target) != -1;
     }
 
@@ -96,13 +98,13 @@ public class LinkedList {
         return null;
     }
 
-    private boolean isEmpty() {
-        return head == null;
+    public boolean isEmpty() {
+        return head == null || tail == null;
     }
 
-    public int[] listToArray() {
-        int[] array = new int[size];
-        var curr = head;
+    public T[] listToArray() {
+        final T[] array = (T[]) new Object[size];
+        Node curr = head;
         for (int i = 0; i < size; i++) {
             array[i] = curr.value;
             curr = curr.next;
@@ -115,10 +117,10 @@ public class LinkedList {
 //        tail = head = null;
 //        for (int value : values) addFirst(value);
         if (isEmpty()) return;
-        var prev = head;
-        var curr = head.next;
+        Node prev = head;
+        Node curr = head.next;
         while (curr != null) {
-            var next = curr.next;
+            Node next = curr.next;
             curr.next = prev;
             prev = curr;
             curr = next;
@@ -130,8 +132,8 @@ public class LinkedList {
 
     public Node kthNode(int k) {
         if (isEmpty()) return null;
-        var bait = head;
-        var target = head;
+        Node bait = head;
+        Node target = head;
         for (int i = 0; i < k - 1; i++) {
             if (bait.next == null) throw new NoSuchElementException();
             bait = bait.next;
@@ -152,15 +154,27 @@ public class LinkedList {
         return target;*/
     }
 
+    public T headValue() {
+        if (head != null)
+            return head.value;
+        return null;
+    }
+
+    public T tailValue() {
+        if (tail != null)
+            return tail.value;
+        return null;
+    }
+
     @Override
     public String toString() {
         StringBuilder strResult = new StringBuilder();
-        var current = head;
+        Node current = head;
         while (current != null) {
             strResult.append(current.value).append(",");
             current = current.next;
         }
-        return strResult.toString() + " size: " + size;
+        return strResult + " size: " + size;
     }
 }
 
