@@ -20,4 +20,11 @@ public class Stack<T> {
     public boolean isEmpty() {
         return dataset.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "Stack{" +
+                "dataset=" + dataset +
+                '}';
+    }
 }
