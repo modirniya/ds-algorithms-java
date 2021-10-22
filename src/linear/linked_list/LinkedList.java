@@ -2,182 +2,135 @@ package linear.linked_list;
 
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> {
+public class LinkedList {
 
     private Node head;
     private Node tail;
 
-    private int size;
+    private int count = 0;
 
     private class Node {
-        private final T value;
-        private LinkedList<T>.Node next;
+        private String value;
+        private Node next;
 
-        public Node(T value) {
+        public Node() {
+        }
+
+        public Node(String value) {
             this.value = value;
+        }
+
+        public Node(String value, Node next) {
+            this.value = value;
+            this.next = next;
         }
 
         @Override
         public String toString() {
             return "Node{" +
-                    "value=" + value +
+                    "\nvalue='" + value + '\'' +
                     '}';
         }
     }
 
-    public void addHead(T value) {
-        size++;
-        var node = new Node(value);
+    public void add(String entry) {
+        if (entry == null) raiseErrorNullEntry();
         if (isEmpty())
-            head = tail = node;
-        else {
-            node.next = head;
-            head = node;
-        }
+            initialFirstNode(entry);
+        else
+            head = new Node(entry, head);
+        count++;
     }
 
-    public void addTail(T value) {
-        size++;
-        var node = new Node(value);
+    public void addTail(String entry) {
+        if (entry == null) raiseErrorNullEntry();
+
         if (isEmpty())
-            addHead(value);
+            initialFirstNode(entry);
         else {
-            tail.next = node;
-            tail = node;
+            tail.next = new Node(entry);
+            tail = tail.next;
         }
+        count++;
     }
 
-    public T removeHead() {
-        // [a -> b -> c]
-        final T value = headValue();
-        if (isEmpty()) throw new NoSuchElementException();
-        size--;
+    public void remove() {
+        if (isEmpty()) raiseErrorEmptyList();
+        count--;
         if (head == tail) {
             head = tail = null;
-            return value;
+            return;
         }
-        Node afterHead = head.next; // [b -> c]
-        head.next = null; // [a -> null]
-        head = afterHead; // [b -> c]
-        return value;
+        final var nextHead = head.next;
+        head.next = null;
+        head = nextHead;
     }
 
     public void removeTail() {
-        if (isEmpty()) throw new NoSuchElementException();
-        size--;
+        if (isEmpty()) raiseErrorEmptyList();
+        count--;
         if (head == tail) {
             head = tail = null;
             return;
         }
         tail = getPreviousOf(tail);
-        if (tail != null)
-            tail.next = null;
+        if (tail != null) tail.next = null;
     }
 
-    public int indexOf(T target) {
+    public int indexOf(String targetValue) {
+        if (targetValue == null) raiseErrorNullEntry();
+        if (isEmpty()) raiseErrorEmptyList();
+        var curr = head;
         var index = 0;
-        Node curr = head;
         while (curr != null) {
-            if (curr.value == target) return index;
+            if (curr.value.equals(targetValue))
+                return index;
             curr = curr.next;
             index++;
         }
         return -1;
     }
 
-    public boolean contains(T target) {
-        return indexOf(target) != -1;
-    }
-
-    private Node getPreviousOf(Node target) {
-        Node curr = head;
-        while (curr.next != null) {
-            if (curr.next == target) return curr;
+    public boolean contains(String targetValue) {
+        if (targetValue == null) raiseErrorNullEntry();
+        if (isEmpty()) raiseErrorEmptyList();
+        var curr = head;
+        while (curr != null) {
+            if (curr.value.equals(targetValue)) return true;
             curr = curr.next;
         }
-        return null;
+        return false;
     }
 
     public boolean isEmpty() {
-        return head == null || tail == null;
+        return count == 0;
     }
 
-    public T[] listToArray() {
-        final T[] array = (T[]) new Object[size];
-        Node curr = head;
-        for (int i = 0; i < size; i++) {
-            array[i] = curr.value;
+    private Node getPreviousOf(Node target) {
+        var curr = head;
+        while (curr != null && curr.next != target)
             curr = curr.next;
-        }
-        return array;
+        return curr;
     }
 
-    public void reverse() {
-//        var values = listToArray();
-//        tail = head = null;
-//        for (int value : values) addFirst(value);
-        if (isEmpty()) return;
-        Node prev = head;
-        Node curr = head.next;
-        while (curr != null) {
-            Node next = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = next;
-        }
-        tail = head;
-        tail.next = null;
-        head = prev;
+    private void initialFirstNode(String entry) {
+        head = tail = new Node(entry);
     }
 
-    public Node kthNode(int k) {
-        if (isEmpty()) return null;
-        Node bait = head;
-        Node target = head;
-        for (int i = 0; i < k - 1; i++) {
-            if (bait.next == null) throw new NoSuchElementException();
-            bait = bait.next;
-        }
-
-        while (bait != tail) {
-            bait = bait.next;
-            target = target.next;
-        }
-        return target;
-        /*int distance = -k;
-        while (bait != null) {
-            bait = bait.next;
-            if (distance == 0) {
-                target = target.next;
-            } else distance++;
-        }
-        return target;*/
+    private void raiseErrorEmptyList() {
+        throw new NoSuchElementException("linked list is empty...");
     }
 
-    public T headValue() {
-        if (head != null)
-            return head.value;
-        return null;
-    }
-
-    public T tailValue() {
-        if (tail != null)
-            return tail.value;
-        return null;
+    private void raiseErrorNullEntry() {
+        throw new IllegalArgumentException("null as argument");
     }
 
     @Override
     public String toString() {
-        StringBuilder strResult = new StringBuilder();
-        Node current = head;
-        while (current != null) {
-            strResult.append(current.value).append(",");
-            current = current.next;
-        }
-        return strResult + " size: " + size;
+        return "LinkedList{" +
+                "\nhead=" + head +
+                "\n, tail=" + tail +
+                "\n, count=" + count +
+                '}';
     }
 }
-
-
-
-

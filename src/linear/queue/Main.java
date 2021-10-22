@@ -1,6 +1,6 @@
 package linear.queue;
 
-import linear.stacks.Stack;
+import linear.stack.Stack;
 
 import java.util.ArrayDeque;
 import java.util.Queue;

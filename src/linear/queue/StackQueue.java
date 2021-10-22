@@ -1,6 +1,6 @@
 package linear.queue;
 
-import linear.stacks.Stack;
+import linear.stack.Stack;
 
 public class StackQueue {
     private Stack<Integer> stackEnqueue;

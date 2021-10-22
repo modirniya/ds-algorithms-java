@@ -1,12 +1,12 @@
-package linear.stacks;
+package linear.stack;
 
-import linear.linked_list.LinkedList;
+import linear.linked_list.GenericLinkedList;
 
 public class Stack<T> {
-    final LinkedList<T> dataset = new LinkedList<>();
+    final GenericLinkedList<T> dataset = new GenericLinkedList<>();
 
     public void push(T value) {
-        dataset.addHead(value);
+        dataset.add(value);
     }
 
     public T pop() {
@@ -14,7 +14,7 @@ public class Stack<T> {
     }
 
     public T peek() {
-        return dataset.headValue();
+        return dataset.value();
     }
 
     public boolean isEmpty() {

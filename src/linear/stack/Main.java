@@ -1,4 +1,4 @@
-package linear.stacks;
+package linear.stack;
 
 public class Main {
     static final Stack<Character> stack = new Stack<>();

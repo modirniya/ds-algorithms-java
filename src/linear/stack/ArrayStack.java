@@ -1,4 +1,4 @@
-package linear.stacks;
+package linear.stack;
 
 public class ArrayStack {
 
